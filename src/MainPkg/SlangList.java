@@ -160,5 +160,18 @@ class SlangList implements java.io.Serializable {
         }
     }
 
+    public void showSearchByKeyHistory() {
+        System.out.println(SlangWordApplication.ANSI_CYAN + "Search by key history:" + SlangWordApplication.ANSI_RESET);
+        for (String s : keySearchHistory) {
+            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + s + SlangWordApplication.ANSI_RESET);
+        }
+    }
+    public void showSearchByValueHistory() {
+        System.out.println(SlangWordApplication.ANSI_CYAN + "Search by value history:" + SlangWordApplication.ANSI_RESET);
+        for (String s : valueSearchHistory) {
+            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + s + SlangWordApplication.ANSI_RESET);
+        }
+    }
+
 }
 
