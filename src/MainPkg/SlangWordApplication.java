@@ -73,9 +73,9 @@ public class SlangWordApplication {
                     System.out.println(ANSI_CYAN() + "\"key\" " + ANSI_RESET() + "       -   Search by key                    " + ANSI_CYAN() + "   \"value\" " + ANSI_RESET() + "           -   search by value");
                     System.out.println(ANSI_CYAN() + "\"keyHistory\" " + ANSI_RESET() + "-   Show key history                 " + ANSI_CYAN() + "   \"valueHistory\" " + ANSI_RESET() + "    -   Show value history ");
                     System.out.println(ANSI_CYAN() + "\"add\" " + ANSI_RESET() + "       -   Add new word                     " + ANSI_CYAN() + "   \"del\" " + ANSI_RESET() + "             -   Delete a word ");
+                    System.out.println(ANSI_CYAN() + "\"edit\" " + ANSI_RESET() + "      -   Edit an existed word             " + ANSI_CYAN() + "   \"random\" " + ANSI_RESET() + "          -   Show a random word");
                     System.out.println(ANSI_CYAN() + "\"keyQuiz\"" + ANSI_RESET() + "    -   Start key quiz                   " + ANSI_CYAN() + "   \"valueQuiz\" " + ANSI_RESET() + "       -   Start value quiz ");
                     System.out.println(ANSI_CYAN() + "\"reset\" " + ANSI_RESET() + "     -   clear all cache data            " + ANSI_CYAN() + "    \"exit\" " + ANSI_RESET() + "            -   Save cache data and exit ");
-                    System.out.println(ANSI_CYAN() + "\"random\" " + ANSI_RESET() + "    -   Show a random word");
                     System.out.println(ANSI_CYAN() + "\"ls\"  " + ANSI_RESET() + "       -   Display the command list");
                     System.out.println("At any state press " + ANSI_RED() + "enter " + ANSI_RESET() + "to back to the menu command");
                     System.out.println(ANSI_GREEN() + "\n=========================================================================" + ANSI_RESET());
