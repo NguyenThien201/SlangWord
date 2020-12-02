@@ -1,5 +1,7 @@
-package MainPkg;//package src;
-import MainPkg.main;
+package MainPkg;
+
+import MainPkg.SlangWordApplication;
+
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.Scanner; // Import the Scanner class to read text files
@@ -10,6 +12,7 @@ import java.io.*;
 class SlangList implements java.io.Serializable {
 
     HashMap<String, String> slangMap = new HashMap<String, String>();
+    HashMap<String, String> lowerCaseSlangMap = new HashMap<String, String>();
     List<String> keySearchHistory = new ArrayList<String>();
     List<String> valueSearchHistory = new ArrayList<String>();
 
@@ -44,8 +47,30 @@ class SlangList implements java.io.Serializable {
         }
 
         this.slangMap = cacheMap;
+        this.lowerCaseSlangMap = this.configValueSlangMap(cacheMap);
         System.out.println("import count " + this.slangMap.size());
         return;
+    }
+
+    public boolean importCacheDataFrom(String path) {
+        SlangList cacheSlang = new SlangList();
+        try {
+            FileInputStream fileIn = new FileInputStream(path);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            cacheSlang = (SlangList) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            System.out.println("Does not have cache file");
+            return false;
+        } catch (ClassNotFoundException c) {
+            System.out.println("Employee class not found");
+            return false;
+        }
+        this.slangMap = cacheSlang.slangMap;
+        this.lowerCaseSlangMap = this.configValueSlangMap(cacheSlang.slangMap);
+        System.out.println("import from cache count  " + this.slangMap.size());
+        return true;
     }
 
     public void saveDataTo(String path) {
@@ -65,29 +90,17 @@ class SlangList implements java.io.Serializable {
         }
     }
 
-    public boolean importCacheDataFrom(String path) {
-        SlangList cacheSlang = new SlangList();
-        try {
-            FileInputStream fileIn = new FileInputStream(path);
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            cacheSlang = (SlangList) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            System.out.println("Does not have cache file");
-            return false;
-        } catch (ClassNotFoundException c) {
-            System.out.println("Employee class not found");
-            return false;
+    private HashMap<String, String> configValueSlangMap(HashMap<String, String> normalMap) {
+        HashMap<String, String> cacheMap = new HashMap<String, String>();
+        for (String key : normalMap.keySet()) {
+            String mapValue = normalMap.get(key);
+            cacheMap.put(key, mapValue.toLowerCase());
         }
-        this.slangMap = cacheSlang.slangMap;
-        System.out.println("import from cache count  " + this.slangMap.size());
-        return true;
+        return cacheMap;
     }
 
     /**
-     *
-     * @param value: the search value
+     * @param value:          the search value
      * @param isAddToHistory: add the search value to history list or not
      * @return the search key stand for the specific value found in the hash map
      */
@@ -99,14 +112,13 @@ class SlangList implements java.io.Serializable {
     }
 
     /**
-     *
      * @param value: the search value
-     * @returnthe search key stand for the specific value found in the hash map
+     * @return the search key stand for the specific value found in the hash map
      */
     public List<String> getWordByValue(String value) {
         List<String> resultList = new ArrayList<String>();
-        for (String key: this.slangMap.keySet()) {
-            String mapValue = this.slangMap.get(key);
+        for (String key : this.lowerCaseSlangMap.keySet()) {
+            String mapValue = this.lowerCaseSlangMap.get(key);
             if (mapValue.contains(value)) {
                 resultList.add(key);
             }
@@ -115,8 +127,7 @@ class SlangList implements java.io.Serializable {
     }
 
     /**
-     *
-     * @param searchKey: the search key
+     * @param searchKey:      the search key
      * @param isAddToHistory: add the search key to history list or not
      * @return the search key stand for the specific value found in the hash map
      */
@@ -124,20 +135,19 @@ class SlangList implements java.io.Serializable {
         if (isAddToHistory) {
             this.keySearchHistory.add(searchKey);
         }
-       return this.getWordByKey(searchKey);
+        return this.getWordByKey(searchKey);
     }
 
     /**
-     *
      * @param searchKey: the search key
      * @return the search key stand for the specific value found in the hash map
      */
     public List<String> getWordByKey(String searchKey) {
         List<String> resultList = new ArrayList<String>();
-        int i =0;
-        while (this.slangMap.get(searchKey + "_" + i) != null) {
+        int i = 0;
+        while (this.lowerCaseSlangMap.get(searchKey + "_" + i) != null) {
             resultList.add(searchKey + "_" + i);
-            i+=1;
+            i += 1;
         }
         return resultList;
     }
@@ -146,7 +156,7 @@ class SlangList implements java.io.Serializable {
         for (String s : keyList) {
             int lastIndex = s.lastIndexOf("_");
             String searchKey = s.substring(0, lastIndex);
-            System.out.println( ">>> " + main.ANSI_BLUE + searchKey +  main.ANSI_RESET +  main.ANSI_YELLOW + " : " +  main.ANSI_YELLOW +  main.ANSI_BLUE + this.slangMap.get(s) + main.ANSI_RESET );
+            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + searchKey + SlangWordApplication.ANSI_RESET + SlangWordApplication.ANSI_YELLOW + " : " + SlangWordApplication.ANSI_YELLOW + SlangWordApplication.ANSI_BLUE + this.slangMap.get(s) + SlangWordApplication.ANSI_RESET);
         }
     }
 

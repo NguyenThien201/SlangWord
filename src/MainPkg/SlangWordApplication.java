@@ -11,8 +11,8 @@ import java.io.*;
 //for converting hash map into json
 
 
-public class main {
-
+public class SlangWordApplication {
+    SlangList slangList;
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -24,13 +24,12 @@ public class main {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public static void main(String[] args) {
-
         long start = System.currentTimeMillis();
-
-
-        SlangList slangList = new SlangList();
-        slangList.loadData();
-
+        SlangWordApplication app = new SlangWordApplication();
+        app.slangList = new SlangList();
+        app.slangList.loadData();
+        long stop = System.currentTimeMillis();
+        System.out.println("Import complete after " + (stop - start) + " miliseconds");
         String state = "menu";
 
         while (true) {
@@ -46,20 +45,10 @@ public class main {
                     state = sc.nextLine();
                     break;
                 case "key":
-                    performKeySearch(slangList);
+                    app.performKeySearch(app.slangList);
                     break;
                 case "value":
-                    Scanner valueScan = new Scanner(System.in);
-                    System.out.print("Enter the value: ");
-                    String searchKey = valueScan.nextLine();
-//                    int i = 0;
-//                    while (slangList.slangMap.get(searchKey + "_" + i) != null) {
-//                        System.out.println( ">>> " + ANSI_BLUE + searchKey + ANSI_RESET + ANSI_YELLOW + " : " + ANSI_YELLOW + ANSI_BLUE + slangList.slangMap.get(searchKey + "_" + i) + ANSI_RESET );
-//                        i+=1;
-//                    }
-//                    if (i == 0) {
-//                        System.out.println(ANSI_RED + "No slang word for \"" + searchKey + "\"" + ANSI_RESET);
-//                    }
+                    app.performValueSearch(app.slangList);
                     break;
                 default:
                     System.out.println("haha");
@@ -68,12 +57,27 @@ public class main {
         }
     }
 
-     static void performKeySearch(SlangList slangList) {
-            Scanner keyScan = new Scanner(System.in);
-            System.out.print("Enter the key: ");
-            String searchKey = keyScan.nextLine();
-            List<String> resultList = slangList.getWordByKey(searchKey, true);
-            slangList.displayAllWordInList(resultList);
+    void performKeySearch(SlangList slangList) {
+        Scanner keyScan = new Scanner(System.in);
+        System.out.print("");
+        System.out.print("Enter the key: ");
+        String searchKey = keyScan.nextLine();
+        long start = System.currentTimeMillis();
+        List<String> resultList = slangList.getWordByKey(searchKey.toLowerCase(), true);
+        long stop = System.currentTimeMillis();
+        System.out.println("Found " + resultList.size() + " results for key \"" + searchKey + "\" after " + (stop - start) + " miliseconds");
+        slangList.displayAllWordInList(resultList);
+    }
+
+    void performValueSearch(SlangList slangList) {
+        Scanner valueScan = new Scanner(System.in);
+        System.out.print("\nEnter the value: ");
+        String searchValue = valueScan.nextLine();
+        long start = System.currentTimeMillis();
+        List<String> resultList = slangList.getWordByValue(searchValue.toLowerCase(), true);
+        long stop = System.currentTimeMillis();
+        System.out.println("Found " + resultList.size() + " results for value \"" + searchValue + "\" after " + (stop - start) + " miliseconds");
+        slangList.displayAllWordInList(resultList);
     }
 
 }
