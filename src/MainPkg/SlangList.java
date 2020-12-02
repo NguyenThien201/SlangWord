@@ -42,7 +42,7 @@ class SlangList implements java.io.Serializable {
                 if (data.contains("`")) {
                     String[] arrOfStr = data.split("`", 2);
                     int i = 0;
-                    while (cacheMap.get(arrOfStr[i] + "_" + i) != null) {
+                    while (cacheMap.get(arrOfStr[0] + "_" + i) != null) {
                         i += 1;
                     }
                     cacheMap.put(arrOfStr[0] + "_" + i, arrOfStr[1]);
