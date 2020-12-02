@@ -160,11 +160,33 @@ class SlangList implements java.io.Serializable {
         }
     }
 
+    public void displayAllWordInListWithIndexPrefix(List<String> keyList) {
+        for (String s : keyList) {
+            int lastIndex = s.lastIndexOf("_");
+            String searchKey = s.substring(0, lastIndex);
+            String indexIndex = s.substring(lastIndex + 1);
+
+            System.out.println(">>> " + SlangWordApplication.ANSI_RED + "[" + indexIndex + "] " + SlangWordApplication.ANSI_RESET + SlangWordApplication.ANSI_BLUE + searchKey + SlangWordApplication.ANSI_RESET + SlangWordApplication.ANSI_YELLOW + " : " + SlangWordApplication.ANSI_YELLOW + SlangWordApplication.ANSI_BLUE + this.slangMap.get(s) + SlangWordApplication.ANSI_RESET);
+        }
+    }
+
     public void showSearchByKeyHistory() {
         System.out.println(SlangWordApplication.ANSI_CYAN + "Search by key history:" + SlangWordApplication.ANSI_RESET);
         for (String s : keySearchHistory) {
             System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + s + SlangWordApplication.ANSI_RESET);
         }
+    }
+    public void addNewWord(String key, String value) {
+        int i = 0;
+        while (this.lowerCaseSlangMap.get(key + "_" + i) != null) {
+            i += 1;
+        }
+        this.slangMap.put(key+"_"+i,value);
+        this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
+    }
+    public void replaceWordWithIndex(String key, String value, int index) {
+        this.slangMap.put(key+"_"+index,value);
+        this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
     }
     public void showSearchByValueHistory() {
         System.out.println(SlangWordApplication.ANSI_CYAN + "Search by value history:" + SlangWordApplication.ANSI_RESET);
@@ -172,6 +194,7 @@ class SlangList implements java.io.Serializable {
             System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + s + SlangWordApplication.ANSI_RESET);
         }
     }
+
 
 }
 

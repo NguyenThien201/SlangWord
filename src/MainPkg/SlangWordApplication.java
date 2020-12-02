@@ -53,7 +53,7 @@ public class SlangWordApplication {
                     break;
                 case "key":
                     if (app.performKeySearch(app.slangList)) {
-                           state = "menu";
+                        state = "menu";
                     }
                     break;
                 case "value":
@@ -69,6 +69,18 @@ public class SlangWordApplication {
                     app.slangList.showSearchByKeyHistory();
                     state = "menu";
                     break;
+                case "add":
+                    Word newWord = app.addNewWords(app.slangList);
+                    if (newWord.replaceIndex>=0) {
+                        app.slangList.replaceWordWithIndex(newWord.key, newWord.value, newWord.replaceIndex);
+                    } else {
+                        app.slangList.addNewWord(newWord.key, newWord.value);
+                    }
+                    state = "menu";
+                    break;
+                case "exit":
+                    System.out.println("Application is shutting down");
+                    return;
                 default:
                     state = "menu";
                     break;
@@ -84,7 +96,7 @@ public class SlangWordApplication {
             return true;
         }
         long start = System.currentTimeMillis();
-        List<String> resultList = slangList.getWordByKey(searchKey.toLowerCase(), true);
+        List<String> resultList = slangList.getWordByKey(searchKey, true);
         long stop = System.currentTimeMillis();
         System.out.println("Found " + resultList.size() + " results for key \"" + searchKey + "\" after " + (stop - start) + " miliseconds");
         slangList.displayAllWordInList(resultList);
@@ -106,6 +118,60 @@ public class SlangWordApplication {
         return false;
     }
 
+    Word addNewWords(SlangList slangList) {
+        Word add = new Word();
+        Scanner keyScan = new Scanner(System.in);
 
+        System.out.print("\nEnter the key for new words: ");
+        add.key = keyScan.nextLine();
+        System.out.print("Enter the value: ");
+        Scanner valueScan = new Scanner(System.in);
+        add.value = valueScan.nextLine();
 
+        List<String> duplicateKeyList = slangList.getWordByKey(add.key);
+        if (duplicateKeyList.isEmpty()) {
+            System.out.println("Completed adding || " + add.key + " || " + add.value);
+            return add;
+        } else {
+            System.out.println("\nFound " + duplicateKeyList.size() + " duplicate results for key \"" + add.key + "\"");
+            System.out.println("Do you want to add a new one or replace an existed one?");
+            Scanner addOrReplace = new Scanner(System.in);
+            System.out.println("\"rep\" for replace - else for add");
+            if (addOrReplace.nextLine().contains("rep")) {
+                System.out.println("Choose word index inside \"[]\" from the list to replace");
+                slangList.displayAllWordInListWithIndexPrefix(duplicateKeyList);
+                while (true) {
+                    Scanner replaceIndexScanner = new Scanner(System.in);
+                    String inputInt = replaceIndexScanner.nextLine();
+                    try {
+                        int replaceIndex = Integer.parseInt(inputInt);
+                        if (replaceIndex >= duplicateKeyList.size() || replaceIndex < 0) {
+                            System.out.println("Index out of range, please choose new index");
+                        } else {
+                            System.out.println("Completed replace \"" + add.key + "\" || \""+ slangList.slangMap.get(add.key+"_"+replaceIndex) + "\" with " + add.key + " || " + add.value);
+                            add.replaceIndex = replaceIndex;
+                            return add;
+                        }
+                    } catch (NumberFormatException ex) {
+                        System.out.println("You must input a number, try again");
+                    }
+                }
+            } else {
+                System.out.println("Completed adding || " + add.key + " || " + add.value);
+                return add;
+            }
+        }
+    }
+
+    final class Word {
+        public String key;
+        public String value;
+        public int replaceIndex;
+
+        Word() {
+            this.key = "";
+            this.value = "";
+            this.replaceIndex = -1;
+        }
+    }
 }
