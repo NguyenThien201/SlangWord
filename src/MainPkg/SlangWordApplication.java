@@ -53,23 +53,23 @@ public class SlangWordApplication {
         app.slangList.loadData();
         long stop = System.currentTimeMillis();
         System.out.println("Import complete after " + (stop - start) + " miliseconds");
-        System.out.println(ANSI_GREEN()+"\n========================================================================="+ANSI_RESET());
+        System.out.println(ANSI_GREEN() + "\n=========================================================================" + ANSI_RESET());
         Scanner colorSc = new Scanner(System.in);
         System.out.println(ANSI_RED() + "IMPORTANT: PRESS ENTER IF THIS LINE IS RED, PRESS ANY KEY ELSE IF NOT" + ANSI_RESET());
         String colorPick = colorSc.nextLine();
         if (!colorPick.isEmpty()) {
             isColor = false;
         }
-        System.out.println(ANSI_GREEN()+"\n========================================================================="+ANSI_RESET());
+        System.out.println(ANSI_GREEN() + "\n=========================================================================" + ANSI_RESET());
         System.out.println(ANSI_YELLOW() + "\nThe random slang word for today is:" + ANSI_RESET());
         app.slangList.showRandomWord();
         String state = "ls";
         while (true) {
             switch (state) {
                 case "ls":
-                    System.out.println(ANSI_GREEN()+"\n========================================================================="+ANSI_RESET());
+                    System.out.println(ANSI_GREEN() + "\n=========================================================================" + ANSI_RESET());
                     System.out.println("\n18127270 - Slang word menu");
-                    System.out.println(ANSI_GREEN()+"Input the command in \"\" to use"+ANSI_RESET());
+                    System.out.println(ANSI_GREEN() + "Input the command in \"\" to use" + ANSI_RESET());
                     System.out.println(ANSI_CYAN() + "\"key\" " + ANSI_RESET() + "       -   Search by key                    " + ANSI_CYAN() + "   \"value\" " + ANSI_RESET() + "           -   search by value");
                     System.out.println(ANSI_CYAN() + "\"keyHistory\" " + ANSI_RESET() + "-   Show key history                 " + ANSI_CYAN() + "   \"valueHistory\" " + ANSI_RESET() + "    -   Show value history ");
                     System.out.println(ANSI_CYAN() + "\"add\" " + ANSI_RESET() + "       -   Add new word                     " + ANSI_CYAN() + "   \"del\" " + ANSI_RESET() + "             -   Delete a word ");
@@ -77,13 +77,13 @@ public class SlangWordApplication {
                     System.out.println(ANSI_CYAN() + "\"reset\" " + ANSI_RESET() + "     -   clear all cache data            " + ANSI_CYAN() + "    \"exit\" " + ANSI_RESET() + "            -   Save cache data and exit ");
                     System.out.println(ANSI_CYAN() + "\"random\" " + ANSI_RESET() + "    -   Show a random word");
                     System.out.println(ANSI_CYAN() + "\"ls\"  " + ANSI_RESET() + "       -   Display the command list");
-                    System.out.println("At any state press "+ANSI_RED()+"enter "+ANSI_RESET()+"to back to the menu command");
-                    System.out.println(ANSI_GREEN()+"\n========================================================================="+ANSI_RESET());
+                    System.out.println("At any state press " + ANSI_RED() + "enter " + ANSI_RESET() + "to back to the menu command");
+                    System.out.println(ANSI_GREEN() + "\n=========================================================================" + ANSI_RESET());
                     state = "menu";
                     break;
                 case "menu":
                     Scanner sc = new Scanner(System.in);
-                    System.out.print(ANSI_GREEN()+"\nMenu :: Enter the command: "+ANSI_RESET());
+                    System.out.print(ANSI_GREEN() + "\nMenu :: Enter the command: " + ANSI_RESET());
                     state = sc.nextLine();
                     break;
                 case "key":
@@ -111,6 +111,15 @@ public class SlangWordApplication {
                         break;
                     } else {
                         app.slangList.deleteWordWithIndex(deleteWord.key, deleteWord.replaceIndex);
+                    }
+                    break;
+                case "edit":
+                    Word editWord = app.editAWord(app.slangList);
+                    if (editWord.replaceIndex < -1) {
+                        state = "menu";
+                        break;
+                    } else {
+                        app.slangList.replaceWordWithIndex(editWord.key, editWord.value, editWord.replaceIndex);
                     }
                     break;
                 case "add":
@@ -208,6 +217,15 @@ public class SlangWordApplication {
                     delete.replaceIndex = -2;
                     return delete;
                 } else if (inputInt.contains("all")) {
+                    System.out.println(ANSI_RED() + "Do you really want to delete all the word with key " + ANSI_YELLOW() + "\"" + delete.key + ANSI_RESET() + "\"" + ANSI_RESET());
+                    System.out.println(ANSI_RED() + "Press \"y\" to confirm" + ANSI_RESET());
+                    Scanner deleteAllConfirm = new Scanner(System.in);
+                    String confirmAll = deleteAllConfirm.nextLine();
+                    if (!confirmAll.equals("Y") && !confirmAll.equals("y")) {
+                        delete.replaceIndex = -2;
+                        System.out.println("Abort delete \"" + delete.key + "\"");
+                        return delete;
+                    }
                     delete.replaceIndex = -1;
                     System.out.println("Completed delete all word with the key \"" + delete.key + "\"");
                     return delete;
@@ -217,6 +235,15 @@ public class SlangWordApplication {
                     if (deleteIndex >= duplicateKeyList.size() || deleteIndex < 0) {
                         System.out.println("Index out of range, please choose new index");
                     } else {
+                        System.out.println(ANSI_RED() + "Do you really want to delete the word with key " + ANSI_YELLOW() + "\"" + delete.key + ANSI_RESET() + "\"" + ANSI_RESET());
+                        System.out.println(ANSI_RED() + "Press \"y\" to confirm" + ANSI_RESET());
+                        Scanner deleteConfirm = new Scanner(System.in);
+                        String confirm = deleteConfirm.nextLine();
+                        if (!confirm.equals("Y") && !confirm.equals("y")) {
+                            delete.replaceIndex = -2;
+                            System.out.println("Abort delete \"" + delete.key + "\"");
+                            return delete;
+                        }
                         System.out.println("Completed delete \"" + delete.key + "\" || \"" + slangList.slangMap.get(delete.key + "_" + deleteIndex));
                         delete.replaceIndex = deleteIndex;
                         return delete;
@@ -227,6 +254,55 @@ public class SlangWordApplication {
             }
         }
     }
+
+    Word editAWord(SlangList slangList) {
+        Word edit = new Word();
+        Scanner keyScan = new Scanner(System.in);
+        System.out.print("\nEnter the key to search for the edit words: ");
+        edit.key = keyScan.nextLine();
+        if (edit.key.isEmpty()) {
+            edit.replaceIndex = -2;
+            return edit;
+        }
+        List<String> duplicateKeyList = slangList.getWordByKey(edit.key);
+        if (duplicateKeyList.isEmpty()) {
+            edit.replaceIndex = -2;
+            System.out.println("Can not find any word to edit");
+            return edit;
+        } else {
+            System.out.println("\nFound " + duplicateKeyList.size() + " duplicate results for key \"" + edit.key + "\"");
+            System.out.println("Choose word index inside \"[]\" from the list to replace");
+            slangList.displayAllWordInListWithIndexPrefix(duplicateKeyList);
+            while (true) {
+                Scanner replaceIndexScanner = new Scanner(System.in);
+                String inputInt = replaceIndexScanner.nextLine();
+                if (inputInt.isEmpty()) {
+                    edit.replaceIndex = -2;
+                    return edit;
+                }
+                try {
+                    int replaceIndex = Integer.parseInt(inputInt);
+                    if (replaceIndex >= duplicateKeyList.size() || replaceIndex < 0) {
+                        System.out.println("Index out of range, please choose new index");
+                    } else {
+                        System.out.print("Enter the edit value: ");
+                        Scanner valueScan = new Scanner(System.in);
+                        edit.value = valueScan.nextLine();
+                        if (edit.value.isEmpty()) {
+                            edit.replaceIndex = -2;
+                            return edit;
+                        }
+                        System.out.println("Completed edit \"" + edit.key + "\" || \"" + slangList.slangMap.get(edit.key + "_" + replaceIndex) + "\" with " + edit.key + " || " + edit.value);
+                        edit.replaceIndex = replaceIndex;
+                        return edit;
+                    }
+                } catch (NumberFormatException ex) {
+                    System.out.println("You must input a number, try again");
+                }
+            }
+        }
+    }
+
 
     Word addNewWords(SlangList slangList) {
         Word add = new Word();
@@ -289,7 +365,7 @@ public class SlangWordApplication {
         int lastIndex = key.lastIndexOf("_");
         String displayKey = key.substring(0, lastIndex);
         int resultPos = ran.nextInt(3) + 1;
-        System.out.println(ANSI_CYAN()+"\nChoose the correct meaning for the " + (isShowKey ? "key \"" : "value \"") + (isShowKey ? displayKey : this.slangList.slangMap.get(key)) + "\" - to exit, press enter:"+ANSI_RESET());
+        System.out.println(ANSI_CYAN() + "\nChoose the correct meaning for the " + (isShowKey ? "key \"" : "value \"") + (isShowKey ? displayKey : this.slangList.slangMap.get(key)) + "\" - to exit, press enter:" + ANSI_RESET());
         for (int i = 1; i <= 4; i++) {
             if (resultPos == i) {
                 System.out.println("[" + i + "] " + (!isShowKey ? displayKey : this.slangList.slangMap.get(key)));

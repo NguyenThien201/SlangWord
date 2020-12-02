@@ -203,9 +203,18 @@ class SlangList implements java.io.Serializable {
             int i = 0;
             while (this.slangMap.get(key + "_" + i) != null) {
                 this.slangMap.remove(key + "_" + i);
+                i += 1;
             }
         } else {
             this.slangMap.remove(key + "_" + index);
+        }
+        if (this.slangMap.get(key + "_" + (index + 1)) != null) {
+            int i = index;
+            while (this.slangMap.get(key + "_" + (i+1)) != null) {
+                this.slangMap.put(key + "_" + i,this.slangMap.get(key + "_" + (i+1)));
+                i += 1;
+            }
+            this.slangMap.remove(key + "_" + i);
         }
         this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
     }
