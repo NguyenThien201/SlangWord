@@ -1,14 +1,11 @@
-package MainPkg;//package src;
+package MainPkg;
 
 import MainPkg.SlangList;
 
-import java.io.File;  // Import the File class
-import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.util.List;
-import java.util.Scanner; // Import the Scanner class to read text files
-import java.util.HashMap;
+import java.util.Random;
+import java.util.Scanner;
 import java.io.*;
-//for converting hash map into json
 
 
 public class SlangWordApplication {
@@ -71,7 +68,7 @@ public class SlangWordApplication {
                     break;
                 case "add":
                     Word newWord = app.addNewWords(app.slangList);
-                    if (newWord.replaceIndex>=0) {
+                    if (newWord.replaceIndex >= 0) {
                         app.slangList.replaceWordWithIndex(newWord.key, newWord.value, newWord.replaceIndex);
                     } else {
                         app.slangList.addNewWord(newWord.key, newWord.value);
@@ -79,6 +76,7 @@ public class SlangWordApplication {
                     state = "menu";
                     break;
                 case "exit":
+                    app.slangList.cacheData();
                     System.out.println("Application is shutting down");
                     return;
 
@@ -90,6 +88,16 @@ public class SlangWordApplication {
                 case "random":
                     app.slangList.showRandomWord();
                     state = "menu";
+                    break;
+                case "keyQuiz":
+                    if (app.performQuiz(true)) {
+                        state = "menu";
+                    }
+                    break;
+                case "valueQuiz":
+                    if (app.performQuiz(false)) {
+                        state = "menu";
+                    }
                     break;
                 default:
                     state = "menu";
@@ -158,7 +166,7 @@ public class SlangWordApplication {
                         if (replaceIndex >= duplicateKeyList.size() || replaceIndex < 0) {
                             System.out.println("Index out of range, please choose new index");
                         } else {
-                            System.out.println("Completed replace \"" + add.key + "\" || \""+ slangList.slangMap.get(add.key+"_"+replaceIndex) + "\" with " + add.key + " || " + add.value);
+                            System.out.println("Completed replace \"" + add.key + "\" || \"" + slangList.slangMap.get(add.key + "_" + replaceIndex) + "\" with " + add.key + " || " + add.value);
                             add.replaceIndex = replaceIndex;
                             return add;
                         }
@@ -171,6 +179,45 @@ public class SlangWordApplication {
                 return add;
             }
         }
+    }
+
+    public boolean performQuiz(boolean isShowKey) {
+        Random ran = new Random();
+        String key = this.slangList.getRandomWordKey();
+        int lastIndex = key.lastIndexOf("_");
+        String displayKey = key.substring(0, lastIndex);
+        int resultPos = ran.nextInt(3) + 1;
+        System.out.println("\nChoose the correct meaning for the " + (isShowKey ? "key \"" : "value \"") + (isShowKey ? displayKey : this.slangList.slangMap.get(key)) + "\" - to exit, press enter:");
+        for (int i = 1; i <= 4; i++) {
+            if (resultPos == i) {
+                System.out.println("[" + i + "] " + (!isShowKey ? displayKey : this.slangList.slangMap.get(key)));
+            } else {
+                String randomKey = this.slangList.getRandomWordKey();
+                while (randomKey.equals(key)) {
+                    randomKey = this.slangList.getRandomWordKey();
+                }
+                System.out.println("[" + i + "] " + (!isShowKey ? randomKey.substring(0, randomKey.lastIndexOf("_")) : this.slangList.slangMap.get(randomKey)));
+            }
+        }
+
+        Scanner stringScanner = new Scanner(System.in);
+        String stringInput = stringScanner.nextLine();
+        if (stringInput.isEmpty()) {
+            return true;
+        }
+        try {
+            int intInput = Integer.parseInt(stringInput);
+            if (intInput > 4 || intInput < 0) {
+                System.out.println("Index out of range, please choose new index between 1 and 4");
+            } else if (intInput == resultPos) {
+                System.out.println("Correct answer!");
+            } else {
+                System.out.println("Incorrect, the answer is [" + resultPos + "] >>> " + (!isShowKey ? displayKey : this.slangList.slangMap.get(key)));
+            }
+        } catch (NumberFormatException ex) {
+            System.out.println("You must input a number, try again");
+        }
+        return false;
     }
 
     final class Word {

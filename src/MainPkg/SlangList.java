@@ -2,9 +2,9 @@ package MainPkg;
 
 import MainPkg.SlangWordApplication;
 
-import java.io.File;  // Import the File class
-import java.io.FileNotFoundException;  // Import this class to handle errors
-import java.util.Scanner; // Import the Scanner class to read text files
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.*;
 import java.util.HashMap;
 import java.io.*;
@@ -22,7 +22,7 @@ class SlangList implements java.io.Serializable {
         }
     }
 
-    public void cacheDate() {
+    public void cacheData() {
         this.saveDataTo("./slangList.ser");
     }
 
@@ -195,13 +195,15 @@ class SlangList implements java.io.Serializable {
         while (this.lowerCaseSlangMap.get(key + "_" + i) != null) {
             i += 1;
         }
-        this.slangMap.put(key+"_"+i,value);
+        this.slangMap.put(key + "_" + i, value);
         this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
     }
+
     public void replaceWordWithIndex(String key, String value, int index) {
-        this.slangMap.put(key+"_"+index,value);
+        this.slangMap.put(key + "_" + index, value);
         this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
     }
+
     public void showSearchByValueHistory() {
         System.out.println(SlangWordApplication.ANSI_CYAN + "Search by value history:" + SlangWordApplication.ANSI_RESET);
         for (String s : valueSearchHistory) {
@@ -209,14 +211,17 @@ class SlangList implements java.io.Serializable {
         }
     }
 
-    public void showRandomWord() {
+    public String getRandomWordKey() {
         Random ran = new Random();
         Object[] keys = slangMap.keySet().toArray();
         Object randomKey = keys[ran.nextInt(keys.length)];
-        String keyString = randomKey.toString();
+        return randomKey.toString();
+    }
+
+    public void showRandomWord() {
+        String keyString = getRandomWordKey();
         int lastIndex = keyString.lastIndexOf("_");
-        String searchKey = keyString.substring(0, lastIndex);
-        List<String> randomKeyList = this.getWordByKey(searchKey);
+        List<String> randomKeyList = this.getWordByKey(keyString.substring(0, lastIndex));
         this.displayAllWordInList(randomKeyList);
     }
 
