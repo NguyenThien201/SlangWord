@@ -19,8 +19,17 @@ class SlangList implements java.io.Serializable {
     public void loadData() {
         if (!this.importCacheDataFrom("./slangList.ser")) {
             this.readDataFrom("./slang.txt");
-            this.saveDataTo("./slangList.ser");
         }
+    }
+
+    public void cacheDate() {
+        this.saveDataTo("./slangList.ser");
+    }
+
+    public void clearCacheData() {
+        this.readDataFrom("./slang.txt");
+        this.keySearchHistory.clear();
+        this.valueSearchHistory.clear();
     }
 
     public void readDataFrom(String path) {
@@ -53,7 +62,7 @@ class SlangList implements java.io.Serializable {
     }
 
     public boolean importCacheDataFrom(String path) {
-        SlangList cacheSlang = new SlangList();
+        SlangList cacheSlang;
         try {
             FileInputStream fileIn = new FileInputStream(path);
             ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -64,11 +73,15 @@ class SlangList implements java.io.Serializable {
             System.out.println("Does not have cache file");
             return false;
         } catch (ClassNotFoundException c) {
-            System.out.println("Employee class not found");
+            System.out.println("Can not found the cache file");
             return false;
         }
+
         this.slangMap = cacheSlang.slangMap;
         this.lowerCaseSlangMap = this.configValueSlangMap(cacheSlang.slangMap);
+        this.keySearchHistory = cacheSlang.keySearchHistory;
+        this.valueSearchHistory = cacheSlang.valueSearchHistory;
+
         System.out.println("import from cache count  " + this.slangMap.size());
         return true;
     }
@@ -176,6 +189,7 @@ class SlangList implements java.io.Serializable {
             System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + s + SlangWordApplication.ANSI_RESET);
         }
     }
+
     public void addNewWord(String key, String value) {
         int i = 0;
         while (this.lowerCaseSlangMap.get(key + "_" + i) != null) {

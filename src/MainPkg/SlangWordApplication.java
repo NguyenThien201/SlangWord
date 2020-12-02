@@ -81,6 +81,12 @@ public class SlangWordApplication {
                 case "exit":
                     System.out.println("Application is shutting down");
                     return;
+
+                case "reset":
+                    System.out.println("Reset the application");
+                    app.slangList.clearCacheData();
+                    state = "ls";
+                    break;
                 default:
                     state = "menu";
                     break;
