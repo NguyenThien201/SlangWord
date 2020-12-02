@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SlangWord:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SlangWord_jar</output-path>
+    <root id="archive" name="SlangWord.jar">
+      <element id="module-output" name="SlangWord" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/MainPkg/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

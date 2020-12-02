@@ -169,7 +169,7 @@ class SlangList implements java.io.Serializable {
         for (String s : keyList) {
             int lastIndex = s.lastIndexOf("_");
             String searchKey = s.substring(0, lastIndex);
-            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + searchKey + SlangWordApplication.ANSI_RESET + SlangWordApplication.ANSI_YELLOW + " : " + SlangWordApplication.ANSI_YELLOW + SlangWordApplication.ANSI_BLUE + this.slangMap.get(s) + SlangWordApplication.ANSI_RESET);
+            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE() + searchKey + SlangWordApplication.ANSI_RESET() + " : " + SlangWordApplication.ANSI_YELLOW() + this.slangMap.get(s) + SlangWordApplication.ANSI_RESET());
         }
     }
 
@@ -179,14 +179,14 @@ class SlangList implements java.io.Serializable {
             String searchKey = s.substring(0, lastIndex);
             String indexIndex = s.substring(lastIndex + 1);
 
-            System.out.println(">>> " + SlangWordApplication.ANSI_RED + "[" + indexIndex + "] " + SlangWordApplication.ANSI_RESET + SlangWordApplication.ANSI_BLUE + searchKey + SlangWordApplication.ANSI_RESET + SlangWordApplication.ANSI_YELLOW + " : " + SlangWordApplication.ANSI_YELLOW + SlangWordApplication.ANSI_BLUE + this.slangMap.get(s) + SlangWordApplication.ANSI_RESET);
+            System.out.println(">>> " + SlangWordApplication.ANSI_RED() + "[" + indexIndex + "] " + SlangWordApplication.ANSI_RESET() + SlangWordApplication.ANSI_BLUE() + searchKey + SlangWordApplication.ANSI_RESET() + " : " + SlangWordApplication.ANSI_BLUE() + this.slangMap.get(s) + SlangWordApplication.ANSI_RESET());
         }
     }
 
     public void showSearchByKeyHistory() {
-        System.out.println(SlangWordApplication.ANSI_CYAN + "Search by key history:" + SlangWordApplication.ANSI_RESET);
+        System.out.println(SlangWordApplication.ANSI_CYAN() + "Search by key history:" + SlangWordApplication.ANSI_RESET());
         for (String s : keySearchHistory) {
-            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + s + SlangWordApplication.ANSI_RESET);
+            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE() + s + SlangWordApplication.ANSI_RESET());
         }
     }
 
@@ -198,16 +198,26 @@ class SlangList implements java.io.Serializable {
         this.slangMap.put(key + "_" + i, value);
         this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
     }
-
+    public void deleteWordWithIndex(String key, int index) {
+        if (index == -1) {
+            int i = 0;
+            while (this.slangMap.get(key + "_" + i) != null) {
+                this.slangMap.remove(key + "_" + i);
+            }
+        } else {
+            this.slangMap.remove(key + "_" + index);
+        }
+        this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
+    }
     public void replaceWordWithIndex(String key, String value, int index) {
         this.slangMap.put(key + "_" + index, value);
         this.lowerCaseSlangMap = this.configValueSlangMap(this.slangMap);
     }
 
     public void showSearchByValueHistory() {
-        System.out.println(SlangWordApplication.ANSI_CYAN + "Search by value history:" + SlangWordApplication.ANSI_RESET);
+        System.out.println(SlangWordApplication.ANSI_CYAN() + "Search by value history:" + SlangWordApplication.ANSI_RESET());
         for (String s : valueSearchHistory) {
-            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE + s + SlangWordApplication.ANSI_RESET);
+            System.out.println(">>> " + SlangWordApplication.ANSI_BLUE() + s + SlangWordApplication.ANSI_RESET());
         }
     }
 
@@ -222,7 +232,9 @@ class SlangList implements java.io.Serializable {
         String keyString = getRandomWordKey();
         int lastIndex = keyString.lastIndexOf("_");
         List<String> randomKeyList = this.getWordByKey(keyString.substring(0, lastIndex));
-        this.displayAllWordInList(randomKeyList);
+        List<String> displayList = new ArrayList<String>();
+        displayList.add(randomKeyList.get(0));
+        this.displayAllWordInList(displayList);
     }
 
 
