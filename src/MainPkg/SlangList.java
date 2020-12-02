@@ -209,6 +209,17 @@ class SlangList implements java.io.Serializable {
         }
     }
 
+    public void showRandomWord() {
+        Random ran = new Random();
+        Object[] keys = slangMap.keySet().toArray();
+        Object randomKey = keys[ran.nextInt(keys.length)];
+        String keyString = randomKey.toString();
+        int lastIndex = keyString.lastIndexOf("_");
+        String searchKey = keyString.substring(0, lastIndex);
+        List<String> randomKeyList = this.getWordByKey(searchKey);
+        this.displayAllWordInList(randomKeyList);
+    }
+
 
 }
 

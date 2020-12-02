@@ -87,6 +87,10 @@ public class SlangWordApplication {
                     app.slangList.clearCacheData();
                     state = "ls";
                     break;
+                case "random":
+                    app.slangList.showRandomWord();
+                    state = "menu";
+                    break;
                 default:
                     state = "menu";
                     break;
